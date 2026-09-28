@@ -1,13 +1,13 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="724" height="292" viewBox="0 0 724 292" fill="none" xmlns="http://www.w3.org/2000/svg">
-<foreignObject x="2.30095e-07" y="0" width="724" height="292"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(0.5px);clip-path:url(#bgblur_0_0_13297_clip_path);height:100%;width:100%"></div></foreignObject><g id="Ellipse 27333" filter="url(#filter0_f_0_13297)" data-figma-bg-blur-radius="1">
+<foreignObject x="2.30095e-07" y="0" width="724" height="292"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(0.5px);clip-path:url(#bgblur_0_0_12991_clip_path);height:100%;width:100%"></div></foreignObject><g id="Ellipse 27333" filter="url(#filter0_f_0_12991)" data-figma-bg-blur-radius="1">
 <path d="M711.78 194.119C711.78 282.331 479.977 278.992 192.532 278.992C2.44728 278.992 5.48089 304.492 12.159 207.007C12.159 118.794 12.1596 89.171 12.1588 10C299.604 10 749.433 19.6661 711.78 194.119Z" fill="#D72D06" fill-opacity="0.1"/>
 </g>
 <defs>
-<filter id="filter0_f_0_13297" x="2.30095e-07" y="0" width="724" height="292" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_f_0_12991" x="2.30095e-07" y="0" width="724" height="292" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feGaussianBlur stdDeviation="5" result="effect1_foregroundBlur_0_13297"/>
+<feGaussianBlur stdDeviation="5" result="effect1_foregroundBlur_0_12991"/>
 </filter>
-<clipPath id="bgblur_0_0_13297_clip_path" transform="translate(-2.30095e-07 0)"><path d="M711.78 194.119C711.78 282.331 479.977 278.992 192.532 278.992C2.44728 278.992 5.48089 304.492 12.159 207.007C12.159 118.794 12.1596 89.171 12.1588 10C299.604 10 749.433 19.6661 711.78 194.119Z"/>
+<clipPath id="bgblur_0_0_12991_clip_path" transform="translate(-2.30095e-07 0)"><path d="M711.78 194.119C711.78 282.331 479.977 278.992 192.532 278.992C2.44728 278.992 5.48089 304.492 12.159 207.007C12.159 118.794 12.1596 89.171 12.1588 10C299.604 10 749.433 19.6661 711.78 194.119Z"/>
 </clipPath></defs>
 </svg>

@@ -78,8 +78,8 @@
 .js-fluid [data-node-id="52:98980"]::before, .js-fluid [data-node-id="52:98980"]::after { content: ""; position: absolute; left: 16px; right: 16px; background: #1d1d1d; }
 .js-fluid [data-node-id="52:98980"]::before { top: 24px; height: 1px; }
 .js-fluid [data-node-id="52:98980"]::after { top: 30px; height: 4px; }
-/* the paw (298×200) and the phone in «Скачайте мобильное приложение» stay in the middle of wider screens */
-.js-fluid div:has(> [data-name="Lapka"]), .js-fluid [data-node-id="113:68397"], .js-fluid [data-node-id="137:80905"] { align-self: center; }
+/* the paw (298×200) stays in the middle of wider screens */
+.js-fluid div:has(> [data-name="Lapka"]) { align-self: center; }
 .js-swipe { -webkit-overflow-scrolling: touch; }
 /* phones narrower than 360: the header row (logo, burger, 4 icons) is 342 px wide in the design — tighten its gaps */
 @media (max-width: 359px) {

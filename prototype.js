@@ -241,7 +241,8 @@
   // ---------------------------------------------------------------- carousels
   // Scroll without a scrollbar; arrows bring the first partly hidden item to the start (and loop).
   function carousel(trackSel, nextSel, prevSel, { autoplay = 0, label = 'элемент' } = {}) {
-    const track = $(trackSel), next = $(nextSel), prev = $(prevSel);
+    const el = x => typeof x === 'string' ? $(x) : x;
+    const track = el(trackSel), next = el(nextSel), prev = el(prevSel);
     if (!track || !next || !prev) return;
     track.classList.add('js-carousel');
     [next, prev].forEach(b => {
@@ -283,8 +284,17 @@
     document.addEventListener('visibilitychange', () => { onScreen = !document.hidden; restart(); });
     restart();
   }
-  // desktop: hero banners (autoplay 5 s) and «Весенние скидки до 25%»; see frames.json
+  // frames.json: hero banners (autoplay 5 s)
   for (const c of CFG.carousels || []) carousel(node(c.track), node(c.next), node(c.prev), c);
+  // Section headers with scroll buttons («Стрелочки»: back, forward) scroll the card row under them.
+  // Any header that gets the buttons in Figma works without extra setup.
+  if (CFG.form !== 'mobile') for (const arrows of $$('[data-name="Стрелочки"]')) {
+    const header = arrows.closest('[data-name="Header"]'), below = header && header.nextElementSibling;
+    if (!below || arrows.children.length < 2) continue;
+    const isRow = e => { const cs = getComputedStyle(e); return cs.display.includes('flex') && !cs.flexDirection.startsWith('column') && e.children.length > 1; };
+    const track = [below, ...below.querySelectorAll('*')].find(isRow);
+    if (track) carousel(track, arrows.children[1], arrows.children[0], { label: 'карточки' });
+  }
 
   // Pagination dots under a swipe row: the active one takes the look of the first dot in the design.
   if (CFG.dots) {
@@ -554,7 +564,8 @@
       }
       els.forEach((el, i) => {
         const val = vals[i] ?? '';
-        el.textContent = val;
+        // untouched values keep Figma's markup (line breaks inside titles are lost in the CSV)
+        if (el.textContent.trim() !== val) el.textContent = val;
         setHidden(itemOf(el, card), !val);
         if (k === 'старая цена') {
           // the strike-through is a separate line drawn over the price chip
