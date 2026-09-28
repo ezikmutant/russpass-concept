@@ -20,7 +20,11 @@
 
   // ---------------------------------------------------------------- desktop ↔ phone
   // A phone opening the desktop page goes to the phone layout (…?desktop keeps the desktop one).
-  if (CFG.form === 'desktop' && CFG.otherForm && matchMedia('(max-width: 767px)').matches && !/[?&]desktop\b/.test(location.search)) {
+  // The desktop page has no viewport tag, so a phone lays it out 980 px wide and a width media
+  // query can't tell it's a phone: look at the screen itself (touch + short side under 768 px).
+  const isPhone = () => matchMedia('(max-width: 767px)').matches ||
+    (matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 768);
+  if (CFG.form === 'desktop' && CFG.otherForm && isPhone() && !/[?&]desktop\b/.test(location.search)) {
     goTo(CFG.otherForm, true);
     return;
   }
