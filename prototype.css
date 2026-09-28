@@ -52,6 +52,13 @@
 .js-carousel::-webkit-scrollbar { display: none; }
 .js-carousel > * { scroll-snap-align: start; }
 .js-arrow[disabled] { opacity: .4; pointer-events: none; }
+.js-carousel { cursor: grab; }
+.js-carousel.js-dragging-row { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; user-select: none; }
+.js-carousel img { -webkit-user-drag: none; }
+
+/* ---------- Like (component «On image red»): hover 15%, pressed 50%; a pressed like goes #E62B00 */
+.js-heart:active { background-color: rgba(29, 29, 29, .5) !important; }
+.js-heart[aria-pressed="true"]:active img { filter: brightness(.9); }
 
 @media (prefers-reduced-motion: reduce) {
   .js-photo, .js-title { transition: none; }

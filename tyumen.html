@@ -4,6 +4,7 @@
 @font-face{font-family:"Suisse Intl:Medium";src:url(assets/fonts/SuisseIntl-Medium.otf) format("opentype")}
 @font-face{font-family:"Suisse Intl:SemiBold";src:url(assets/fonts/SuisseIntl-SemiBold.otf) format("opentype")}
 @font-face{font-family:"Proto Grotesk:Regular";src:url(assets/fonts/ProtoGrotesk-Regular.otf) format("opentype")}
+@font-face{font-family:"Proto Grotesk:Bold";src:url(assets/fonts/ProtoGrotesk-Bold.otf) format("opentype")}
 @font-face{font-family:"Bebas Neue:Bold";src:local("BebasNeue")}
 @font-face{font-family:"Bebas Neue Cyrillic:Regular";src:local("BebasNeue")}
 @font-face{font-family:"SF Pro Text:Regular";src:local("SFProText-Regular")}
@@ -1681,6 +1682,9 @@ html,body{margin:0;background:#fff} #root{width:1440px;margin:0 auto;overflow:hi
 /* Figma "truncate text" isn't exported: clamp multi-line ellipsis text to 2 lines */
 p.overflow-hidden.text-ellipsis:not(.whitespace-nowrap),
 .overflow-hidden.text-ellipsis:not(.whitespace-nowrap) > p:only-child{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:0}
+/* phone Top-10: titles run to 3 lines, as on desktop */
+:is([data-node-id="120:64259"],[data-node-id="137:80680"]) p.overflow-hidden.text-ellipsis,
+:is([data-node-id="120:64259"],[data-node-id="137:80680"]) .overflow-hidden.text-ellipsis>p{-webkit-line-clamp:3!important}
 /* «Популярные направления» / «Выберите новое направление»: city names run to 3 lines («Ханты-Мансийский автономный округ (Югра)») */
 :is([data-node-id="113:67786"],[data-node-id="132:71685"]) p.overflow-hidden.text-ellipsis,
 :is([data-node-id="113:67786"],[data-node-id="132:71685"]) .overflow-hidden.text-ellipsis>p{-webkit-line-clamp:3!important}

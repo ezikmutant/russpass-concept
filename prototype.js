@@ -233,18 +233,71 @@
     else if (/border-\[#d9d9d9\]|border-\[#1d1d1d\]/.test(cls) && !/bg-/.test(cls)) b.classList.add('js-btn-outline');
   });
   if (CFG.rubrics) $$(CFG.rubrics).forEach(r => r.classList.add('js-rubric'));
+  // Like on a card photo (component «On image red»): a click puts the like on (heart filled #FF3000)
+  // and takes it off. Size M has a 20 px heart, L a 24 px one. Likes last until the page reloads.
   $$('[data-name="heart"]').forEach(h => {
     const wrap = h.parentElement;
-    if (wrap && /rgba\(29, 29, 29/.test(getComputedStyle(wrap).backgroundColor)) wrap.classList.add('js-heart');
+    if (!wrap || !/rgba\(29, 29, 29/.test(getComputedStyle(wrap).backgroundColor)) return;
+    const img = $('img', h);
+    wrap.classList.add('js-heart');
+    wrap.tabIndex = 0;
+    wrap.setAttribute('role', 'button'); wrap.setAttribute('aria-pressed', 'false'); wrap.setAttribute('aria-label', 'В избранное');
+    if (img) { img.dataset.off = img.getAttribute('src'); img.dataset.on = asset(`assets/heart-on-${Math.round(h.getBoundingClientRect().width) >= 24 ? 24 : 20}.svg`); }
   });
+  // one handler for all hearts, so copies of cards made later (rows with arrows) work too
+  const toggleLike = wrap => {
+    const liked = wrap.getAttribute('aria-pressed') !== 'true', img = $('[data-name="heart"] img', wrap);
+    wrap.setAttribute('aria-pressed', String(liked));
+    wrap.setAttribute('aria-label', liked ? 'Убрать из избранного' : 'В избранное');
+    if (img) img.src = liked ? img.dataset.on : img.dataset.off;
+  };
+  document.addEventListener('click', e => { const w = e.target.closest('.js-heart'); if (w) { e.preventDefault(); e.stopPropagation(); toggleLike(w); } });
+  document.addEventListener('keydown', e => { const w = e.target.closest && e.target.closest('.js-heart'); if (w && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleLike(w); } });
 
   // ---------------------------------------------------------------- carousels
   // Scroll without a scrollbar; arrows bring the first partly hidden item to the start (and loop).
-  function carousel(trackSel, nextSel, prevSel, { autoplay = 0, label = 'элемент' } = {}) {
+  // A mouse can drag a row sideways (touch and trackpads scroll it natively). A drag longer than a
+  // few pixels doesn't count as a click on the card under the pointer.
+  function dragToScroll(track) {
+    let x0 = 0, s0 = 0, dragging = false, moved = false;
+    track.addEventListener('pointerdown', e => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      dragging = true; moved = false; x0 = e.clientX; s0 = track.scrollLeft;
+    });
+    addEventListener('pointermove', e => {
+      if (!dragging) return;
+      const dx = e.clientX - x0;
+      if (!moved && Math.abs(dx) > 4) { moved = true; track.classList.add('js-dragging-row'); }
+      if (moved) track.scrollLeft = s0 - dx;
+    });
+    addEventListener('pointerup', () => {
+      if (!dragging) return;
+      dragging = false;
+      if (moved) {
+        track.classList.remove('js-dragging-row');   // snapping comes back and settles on the nearest card
+        track.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); }, { capture: true, once: true });
+      }
+    });
+    track.addEventListener('dragstart', e => e.preventDefault());   // images would start a native drag
+  }
+
+  function carousel(trackSel, nextSel, prevSel, { autoplay = 0, label = 'элемент', fillRow = false } = {}) {
     const el = x => typeof x === 'string' ? $(x) : x;
     const track = el(trackSel), next = el(nextSel), prev = el(prevSel);
     if (!track || !next || !prev) return;
     track.classList.add('js-carousel');
+    // A row with arrows whose cards all fit (Figma draws no cards past the edge): repeat its cards
+    // so there is something to scroll. The copies carry no node ids (not in the CSV).
+    if (fillRow && track.scrollWidth <= track.clientWidth + 2) {
+      const originals = [...track.children];
+      for (let k = 0; k < 2; k++) originals.forEach(c => {
+        const copy = c.cloneNode(true);
+        copy.removeAttribute('data-node-id'); copy.querySelectorAll('[data-node-id]').forEach(e => e.removeAttribute('data-node-id'));
+        copy.dataset.copy = ''; copy.setAttribute('aria-hidden', 'true');
+        track.appendChild(copy);
+      });
+    }
+    dragToScroll(track);
     [next, prev].forEach(b => {
       const face = b.querySelector('[data-name="Button"]') || b;   // a flipped arrow wraps its button
       face.classList.add('js-btn');
@@ -286,14 +339,17 @@
   }
   // frames.json: hero banners (autoplay 5 s)
   for (const c of CFG.carousels || []) carousel(node(c.track), node(c.next), node(c.prev), c);
-  // Section headers with scroll buttons («Стрелочки»: back, forward) scroll the card row under them.
+  // Scroll buttons («Стрелочки»: back, forward) in a section title scroll the card row under it.
   // Any header that gets the buttons in Figma works without extra setup.
   if (CFG.form !== 'mobile') for (const arrows of $$('[data-name="Стрелочки"]')) {
-    const header = arrows.closest('[data-name="Header"]'), below = header && header.nextElementSibling;
+    // the title row holding the arrows: the Header component, or whatever row the arrows sit in
+    let header = arrows.closest('[data-name="Header"]') || arrows.parentElement;
+    while (header && !header.nextElementSibling) header = header.parentElement;
+    const below = header && header.nextElementSibling;
     if (!below || arrows.children.length < 2) continue;
     const isRow = e => { const cs = getComputedStyle(e); return cs.display.includes('flex') && !cs.flexDirection.startsWith('column') && e.children.length > 1; };
     const track = [below, ...below.querySelectorAll('*')].find(isRow);
-    if (track) carousel(track, arrows.children[1], arrows.children[0], { label: 'карточки' });
+    if (track) carousel(track, arrows.children[1], arrows.children[0], { label: 'карточки', fillRow: true });
   }
 
   // Pagination dots under a swipe row: the active one takes the look of the first dot in the design.
